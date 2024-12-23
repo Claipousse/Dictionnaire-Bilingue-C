@@ -1,0 +1,3 @@
+Voiture:Vehicule qui fait vroum vroum:Car
+Jardin:Espace vert avec des plantes de l'herbe et des fleurs:Garden/Yard
+Parapluie:Pour se proteger de la pluie:Umbrella
