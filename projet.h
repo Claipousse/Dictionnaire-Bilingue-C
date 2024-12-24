@@ -8,7 +8,7 @@
 
 #define LONGUEUR_MOTS_MAX 50
 #define LONGUEUR_DEFINITION_MAX 100
-#define TAILLE_PHYSIQUE 10
+#define TAILLE_PHYSIQUE 5
 
 typedef struct {
     char mot[LONGUEUR_MOTS_MAX];

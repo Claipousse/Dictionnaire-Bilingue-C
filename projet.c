@@ -46,20 +46,22 @@ void afficherDictionnaire(Dictionnaire* dictionnaire) {
 }
 
 void ajouterMot(Dictionnaire* dictionnaire, char *mot, char* definition, char* traduction, int afficherMessage) {
-    //La saisie du mot, definition et de la traduction se fera dans le sous-programme menu (à l'aide d'un switch)
+    //La saisie du mot, definition et de la traduction se fera dans le sous-programme menu
     //Avant d'ajouter le mot, on s'assure qu'il y a sufffisament de place allouée, sinon, on réalloue l'espace nécéssaire
     if (dictionnaire->taille == dictionnaire->capacite) redimensionnerDictionnaire(dictionnaire);
     //Après toutes les précautions prises, on peut enfin ajouter le mot au dictionnaire
     strcpy(dictionnaire->ligne[dictionnaire->taille].mot, mot);
     strcpy(dictionnaire->ligne[dictionnaire->taille].definition, definition);
     strcpy(dictionnaire->ligne[dictionnaire->taille].traduction, traduction);
+    //Comme on a ajouté un mot, la taille du dictionnaire doit augmenter de +1
     dictionnaire->taille++;
+    //Si on veut qu'un message s'affiche, on doit passer en parametre la valeur de afficherMessage à 1 (true), si on ne veut pas 0 (false)
     if (afficherMessage) printf("Mot ajoute avec succes ! :)\n");
 }
 
 void supprimerMot(Dictionnaire* dictionnaire, char *mot) {
     //L'index du mot à supprimer est une variable temporaire, qu'on utilisera pour décaler tous les éléments de 1 (à partir du mot qu'on souhaite supprimer)
-    int index_mot_a_supprimer = rechercherMot();
+    int index_mot_a_supprimer = rechercherMot(dictionnaire, mot);
     if (index_mot_a_supprimer == -1) {
         printf("Erreur : Ce mot n'est pas present dans le dictionnaire...\n");
         return;
@@ -80,6 +82,7 @@ void afficherDefinition(Dictionnaire* dictionnaire, char *mot) {
             return;
         }
     }
+    //Si le mot n'est pas trouvé, on renvoi un message d'erreur
     printf("Erreur : Ce mot n'est pas present dans le dictionnaire...\n");
 }
 
@@ -91,22 +94,26 @@ void afficherTraduction(Dictionnaire* dictionnaire, char* mot) {
             return;
         }
     }
+    //Si le mot n'est pas trouvé, on renvoi un message d'erreur
     printf("Erreur : Ce mot n'est pas present dans le dictionnaire...\n");
 }
 
 void sauvegardeDictionnaire(Dictionnaire* dictionnaire) {
     FILE *pf = fopen("dict.txt", "w");
+    //Si le pointeur ne renvoi sur rien, c'est que le fichier n'a pas pu être ouvert, on renvoit donc une erreur
     if (pf == NULL) {
         printf("Erreur : Le fichier n'a pas pu etre ouvert...\n");
         return;
     }
+    //1 itération = 1 saut à la ligne, on va repeter l'opération selon la taille du dictionnaire (= le nombre de mots)
     for (int i = 0; i < dictionnaire->taille; i++) fprintf(pf, "%s:%s:%s\n", dictionnaire->ligne[i].mot, dictionnaire->ligne[i].definition, dictionnaire->ligne[i].traduction);
-    fclose(pf);
+    fclose(pf); //On ferme le fichier quand on a finit, afin de liberer des ressources systèmes
     printf("Le dictionnaire a etait sauvegarde avec succes !\n");
 }
 
 void redimensionnerDictionnaire(Dictionnaire* dictionnaire) {
-    dictionnaire->capacite*=2; //On multiplie la capacite par 2, pour eviter un appel trop frequent à realloc, qui pourrait nuire aux performances et à la vitesse d'execution
+    //On multiplie la capacite par 2, pour eviter un appel trop frequent à realloc, qui pourrait nuire aux performances et à la vitesse d'execution
+    dictionnaire->capacite*=2;
     dictionnaire->ligne = realloc(dictionnaire->ligne, dictionnaire->capacite * sizeof(Ligne));
     if (dictionnaire->ligne == NULL) {
         printf("Erreur: L'allocation de la memoire à echouee...\n");
@@ -115,20 +122,24 @@ void redimensionnerDictionnaire(Dictionnaire* dictionnaire) {
 }
 
 void lireChaineDeCaracteres(char* chaine, int taille_max) {
+    //On lit une chaine de caractère saisit par l'utilisateur, fgets permet de saisir des espaces et accents
+    //Si la chaine saisie n'est pas nulle, on s'assure qu'elle se termine correctement en remplaçant \n (fgets le met automatiquement) par \0
     if (fgets(chaine, taille_max, stdin) != NULL) chaine[strcspn(chaine, "\n")] = '\0';
-    /* strlen(chaine) == taille_max - 1 : La chaîne lue occupe tout l'espace disponible, indique si l'utilisateur a atteint la limite possible.
+
+    /* strlen(chaine) == taille_max - 1 : La chaîne lue occupe tout l'espace disponible, indique si l'utilisateur a atteint la limite.
      * chaine[taille_max - 2] != '\n' : Dernier caractère lu avant la limite n’est pas un saut de ligne (\n). L'abscence de \n signifie que l'utilisateur a entré trop de caractères.
      * Si ces 2 conditions sont réunis, il faut vider le tampon d'entrée */
     if (strlen(chaine) == taille_max - 1 && chaine[taille_max - 2] != '\n') {
         int c;
+        //Tant que EOF n'est pas rencontré, boucle lit et consomme les caractères en surplus
         while ((c = getchar()) != '\n' && c != EOF); //EOF = Fin du fichier
     }
 }
 
 int rechercherMot(Dictionnaire* dictionnaire, char* mot) {
     for (int i = 0; i < dictionnaire->taille; i++) {
-        if (strcmp(dictionnaire->ligne[i].mot, mot) == 0) { //Si la chaine de caractère est trouvée (est égale), on y associe l'index correspondant
-            return i;
+        if (strcmp(dictionnaire->ligne[i].mot, mot) == 0) {
+            return i;  //Si la chaine de caractère est trouvée (est égale), on y associe l'index correspondant
         }
     }
     return -1; //Sinon, on return -1, cela s'interpretera par la suite par un message d'erreur
@@ -137,7 +148,7 @@ int rechercherMot(Dictionnaire* dictionnaire, char* mot) {
 void ajoutSynonyme(Dictionnaire* dictionnaire, char* mot) {
     if (preventionDictionnaireVide(dictionnaire)) return;
     char synonyme[LONGUEUR_MOTS_MAX];
-
+    //On demande d'abord le synonyme de quel mot, pour pouvoir se placer sur la bonne ligne du dictionnaire
     printf("Le synonyme de quel mot voulez-vous ajouter ?\n");
     lireChaineDeCaracteres(mot, LONGUEUR_MOTS_MAX);
     if (preventionDepassementTailleMot(mot, LONGUEUR_MOTS_MAX)) return;
@@ -146,11 +157,13 @@ void ajoutSynonyme(Dictionnaire* dictionnaire, char* mot) {
         printf("Erreur : Ce mot n'est pas present dans le dictionnaire...\n");
         return;
     }
+    //On demande à l'utilisateur de saisir un synonyme en anglais, qui sera ajouté a la traduction
     printf("Saisissez le synonyme (anglais) :\n");
     lireChaineDeCaracteres(synonyme, LONGUEUR_MOTS_MAX);
     if (preventionDepassementTailleMot(synonyme, LONGUEUR_MOTS_MAX)) return;
     if (preventionCaracteresInterdits(synonyme)) return;
     if (preventionDoublonSynonyme(dictionnaire->ligne[index_mot].traduction, synonyme)) return;
+    //Si toutes les conditions sont respectés, on ajoute le synonyme en concaténant la/les traduction(s) et le nouveau synonyme
     strcat(dictionnaire->ligne[index_mot].traduction, "/");
     strcat(dictionnaire->ligne[index_mot].traduction, synonyme);
     printf("Synonyme anglais ajoute avec succes !\n");
@@ -171,14 +184,19 @@ void supprimerSynonyme(Dictionnaire* dictionnaire, char* mot) {
     lireChaineDeCaracteres(synonyme, LONGUEUR_MOTS_MAX);
     if (preventionDepassementTailleMot(synonyme, LONGUEUR_MOTS_MAX)) return;
     if (preventionCaracteresInterdits(synonyme)) return;
+    //On cherche le début du synonyme pour bien se positionner via strstr (cherche une sous-chaîne)
     char* debut_synonyme = strstr(dictionnaire->ligne[index_mot].traduction, synonyme);
     if (debut_synonyme == NULL) {
         printf("Erreur : Le synonyme saisi n'existe pas dans les traductions du mot...\n");
         return;
     }
+    //Puis on definit la longueur de la chaine via strlen (qu'on stocke dans une variable de type size_t)
     size_t longueur_synonyme = strlen(synonyme);
+    // Cas n°1 : Synonyme suivi par d'autres synonymes
     if (*(debut_synonyme + longueur_synonyme) == '/') memmove(debut_synonyme, debut_synonyme + longueur_synonyme + 1, strlen(debut_synonyme + longueur_synonyme + 1) + 1);
+    // Cas n°2 : Synonyme est en fin de chaine
     else if (debut_synonyme != dictionnaire->ligne[index_mot].traduction) *(debut_synonyme - 1) = '\0';
+    // Cas n°3 : Synonyme est seul, dans ce cas on refuse la suppression car on veut au minimum une traduction
     else {
         printf("Erreur : Impossible de supprimer une traduction qui n'a pas de synonyme...\n");
         return;
@@ -187,6 +205,9 @@ void supprimerSynonyme(Dictionnaire* dictionnaire, char* mot) {
 }
 
 void modifierSynonyme(Dictionnaire* dictionnaire, char* mot) {
+    /*On va en quelque sorte mélanger la fonction ajouterSynonyme et supprimerSynonyme, en effet, pour modifier, on va :
+    *Supprimer le synonyme que l'on veut modifier
+    *Ajouter un nouveau synonyme qui sera la modification du synonyme qu'on veut changer */
     if (preventionDictionnaireVide(dictionnaire)) return;
     char synonyme_a_supprimer[LONGUEUR_MOTS_MAX];
     char synonyme_a_ajouter[LONGUEUR_MOTS_MAX];
@@ -200,6 +221,8 @@ void modifierSynonyme(Dictionnaire* dictionnaire, char* mot) {
         return;
     }
 
+    //On fait les deux saisies avant les modifications , pour confirmer que les deux chaines soient ok, avant de faire des modifications :
+    //Saisi du mot à remplacer
     printf("Saisissez le synonyme que vous voulez modifier :\n");
     lireChaineDeCaracteres(synonyme_a_supprimer, LONGUEUR_MOTS_MAX);
     if (preventionDepassementTailleMot(synonyme_a_supprimer, LONGUEUR_MOTS_MAX)) return;
@@ -210,13 +233,14 @@ void modifierSynonyme(Dictionnaire* dictionnaire, char* mot) {
         printf("Erreur : Le synonyme saisi n'existe pas dans les traductions du mot...\n");
         return;
     }
-
+    //Saisi par quel synonyme doit on le remplacer
     printf("Saisissez le nouveau synonyme :\n");
     lireChaineDeCaracteres(synonyme_a_ajouter, LONGUEUR_MOTS_MAX);
     if (preventionDepassementTailleMot(synonyme_a_ajouter, LONGUEUR_MOTS_MAX)) return;
     if (preventionCaracteresInterdits(synonyme_a_ajouter)) return;
     if (preventionDoublonSynonyme(dictionnaire->ligne[index_mot].traduction, synonyme_a_ajouter)) return;
 
+    //Quand les deux chaines sont validés par les restrictions posés, on peut enfin modifier le synonyme
     size_t longueur_synonyme_a_supprimer = strlen(synonyme_a_supprimer);
     if (*(debut_synonyme_a_supprimer + longueur_synonyme_a_supprimer) == '/') memmove(debut_synonyme_a_supprimer, debut_synonyme_a_supprimer + longueur_synonyme_a_supprimer + 1, strlen(debut_synonyme_a_supprimer + longueur_synonyme_a_supprimer + 1) + 1);
     else if (debut_synonyme_a_supprimer != dictionnaire->ligne[index_mot].traduction) *(debut_synonyme_a_supprimer - 1) = '\0';
@@ -231,13 +255,17 @@ void modifierSynonyme(Dictionnaire* dictionnaire, char* mot) {
 }
 
 void jeuApprentissage(Dictionnaire* dictionnaire) {
+    preventionCaracteresInterdits(dictionnaire);
     char reponse[LONGUEUR_MOTS_MAX];
     if (preventionCaracteresInterdits(dictionnaire)) return;
+    //On va choisir un mot au hasard parmi ceux du dictionnaire
     srand(time(NULL));
     int index_mot_a_deviner = rand() % dictionnaire->taille;
     printf("Quel est la traduction du mot %s ?\n", dictionnaire->ligne[index_mot_a_deviner].mot);
     lireChaineDeCaracteres(reponse, LONGUEUR_MOTS_MAX);
+    //Si on saisit 1 seul synonymes parmi tous ceux possibles, il faut que la réponse soit considérée comme corecte
     char* liste_synonymes = dictionnaire->ligne[index_mot_a_deviner].traduction;
+    //On doit donc séparé chaque synonyme pour les analyser un à un
     char* synonyme = strtok(liste_synonymes, "/");
     while (synonyme != NULL) {
         if (strcmp(synonyme, reponse)==0) {
@@ -246,6 +274,7 @@ void jeuApprentissage(Dictionnaire* dictionnaire) {
         }
         synonyme = strtok(NULL, "/");
     }
+    //Si l'utilisateur se trompe, on affiche la ou les bonnes réponses
     printf("Mauvaise reponse... La reponse correcte etait : %s\n",dictionnaire->ligne[index_mot_a_deviner].traduction);
 }
 
