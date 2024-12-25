@@ -8,8 +8,8 @@ set(CMAKE_DEPENDS_LANGUAGES
 
 # The set of dependency files which are needed:
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
-  "C:/Users/cleme/Desktop/Projet Dictionnaire/main.c" "CMakeFiles/Projet_Dictionnaire.dir/main.c.obj" "gcc" "CMakeFiles/Projet_Dictionnaire.dir/main.c.obj.d"
-  "C:/Users/cleme/Desktop/Projet Dictionnaire/projet.c" "CMakeFiles/Projet_Dictionnaire.dir/projet.c.obj" "gcc" "CMakeFiles/Projet_Dictionnaire.dir/projet.c.obj.d"
+  "C:/Users/cleme/Desktop/Dictionnaire-Bilingue-C/main.c" "CMakeFiles/Projet_Dictionnaire.dir/main.c.obj" "gcc" "CMakeFiles/Projet_Dictionnaire.dir/main.c.obj.d"
+  "C:/Users/cleme/Desktop/Dictionnaire-Bilingue-C/projet.c" "CMakeFiles/Projet_Dictionnaire.dir/projet.c.obj" "gcc" "CMakeFiles/Projet_Dictionnaire.dir/projet.c.obj.d"
   )
 
 # Targets to which this target links which contain Fortran sources.

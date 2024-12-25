@@ -58,6 +58,6 @@ void choix3(Dictionnaire* dictionnaire, char* mot);
 void choix4(Dictionnaire* dictionnaire, char* mot);
 void choix5(Dictionnaire* dictionnaire, char* mot);
 void choix6(Dictionnaire* dictionnaire, char* mot);
-void menu(Dictionnaire* dictionnaire);
+void menu(Dictionnaire* dictionnaire); //Passerelle entre l'utilisateur et les sous-programmes
 
 #endif

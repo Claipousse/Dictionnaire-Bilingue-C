@@ -257,16 +257,21 @@ void modifierSynonyme(Dictionnaire* dictionnaire, char* mot) {
 void jeuApprentissage(Dictionnaire* dictionnaire) {
     preventionDictionnaireVide(dictionnaire);
     char reponse[LONGUEUR_MOTS_MAX];
-    if (preventionCaracteresInterdits(reponse)) return;
     //On va choisir un mot au hasard parmi ceux du dictionnaire
     srand(time(NULL));
     int index_mot_a_deviner = rand() % dictionnaire->taille;
     printf("Quel est la traduction du mot %s ?\n", dictionnaire->ligne[index_mot_a_deviner].mot);
     lireChaineDeCaracteres(reponse, LONGUEUR_MOTS_MAX);
-    //Si on saisit 1 seul synonymes parmi tous ceux possibles, il faut que la réponse soit considérée comme corecte
-    char* liste_synonymes = dictionnaire->ligne[index_mot_a_deviner].traduction;
-    //On doit donc séparé chaque synonyme pour les analyser un à un
-    char* synonyme = strtok(liste_synonymes, "/");
+    if (preventionCaracteresInterdits(reponse)) return;
+    if (preventionDepassementTailleMot(reponse, LONGUEUR_MOTS_MAX)) return;
+
+    //On crée une copie de la liste des synonymes pour ne pas modifier l'originale
+    char copie_liste_synonymes[LONGUEUR_MOTS_MAX];
+    strncpy(copie_liste_synonymes, dictionnaire->ligne[index_mot_a_deviner].traduction, LONGUEUR_MOTS_MAX);
+    copie_liste_synonymes[LONGUEUR_MOTS_MAX - 1] = '\0'; //On s'assure que la chaine se termine correctement
+
+    //On doit donc séparer chaque synonyme pour les analyser un par un
+    char* synonyme = strtok(copie_liste_synonymes, "/");
     while (synonyme != NULL) {
         if (strcmp(synonyme, reponse)==0) {
             printf("Bonne reponse !\n");

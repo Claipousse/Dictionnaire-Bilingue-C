@@ -1,6 +1,6 @@
 CMakeFiles/Projet_Dictionnaire.dir/projet.c.obj: \
- C:\Users\cleme\Desktop\Projet\ Dictionnaire\projet.c \
- C:\Users\cleme\Desktop\Projet\ Dictionnaire\projet.h \
+ C:\Users\cleme\Desktop\Dictionnaire-Bilingue-C\projet.c \
+ C:\Users\cleme\Desktop\Dictionnaire-Bilingue-C\projet.h \
  C:/Program\ Files/JetBrains/CLion\ 2024.2.2/bin/mingw/x86_64-w64-mingw32/include/stdio.h \
  C:/Program\ Files/JetBrains/CLion\ 2024.2.2/bin/mingw/x86_64-w64-mingw32/include/corecrt_stdio_config.h \
  C:/Program\ Files/JetBrains/CLion\ 2024.2.2/bin/mingw/x86_64-w64-mingw32/include/corecrt.h \
