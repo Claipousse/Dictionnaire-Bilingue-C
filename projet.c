@@ -7,14 +7,12 @@ void chargerDictionnaire(Dictionnaire* dictionnaire) {
         dictionnaire->ligne = malloc(TAILLE_PHYSIQUE * sizeof(Ligne));
         if (dictionnaire->ligne == NULL) {
             printf("Erreur: Echec de l'allocation de la memoire...\n");
-            fclose(pf);
             exit(EXIT_FAILURE);
         }
         dictionnaire->taille = 0;
         dictionnaire->capacite = TAILLE_PHYSIQUE;
         return;
     }
-
     dictionnaire->ligne = malloc(TAILLE_PHYSIQUE * sizeof(Ligne));
     if (dictionnaire->ligne == NULL) {
         printf("Erreur : Echec de l'allocation memoire..\n");
