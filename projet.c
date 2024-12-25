@@ -255,9 +255,9 @@ void modifierSynonyme(Dictionnaire* dictionnaire, char* mot) {
 }
 
 void jeuApprentissage(Dictionnaire* dictionnaire) {
-    preventionCaracteresInterdits(dictionnaire);
+    preventionDictionnaireVide(dictionnaire);
     char reponse[LONGUEUR_MOTS_MAX];
-    if (preventionCaracteresInterdits(dictionnaire)) return;
+    if (preventionCaracteresInterdits(reponse)) return;
     //On va choisir un mot au hasard parmi ceux du dictionnaire
     srand(time(NULL));
     int index_mot_a_deviner = rand() % dictionnaire->taille;
