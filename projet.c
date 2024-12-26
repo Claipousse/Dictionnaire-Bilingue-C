@@ -282,7 +282,7 @@ void jeuApprentissage(Dictionnaire* dictionnaire) {
 }
 
 int preventionDictionnaireVide(Dictionnaire* dictionnaire) {
-    if (dictionnaire->taille == 0) {
+    if (dictionnaire->taille == 0) { //Si la taille du dictionnaire est de 0, alors il n'y a pas de mots
         printf("Erreur : Le dictionnaire est vide...\n");
         return 1;
     }
@@ -290,7 +290,7 @@ int preventionDictionnaireVide(Dictionnaire* dictionnaire) {
 }
 
 int preventionDepassementTailleMot(char* chaine, int taille_max) {
-    if (strlen(chaine) == taille_max - 1) {
+    if (strlen(chaine) == taille_max - 1) { //Si la chaine va jusqu'à la limite, le chaine est trop longue
         printf("Erreur : La limite des %d caracteres est depassee...\n", taille_max);
         return 1;
     }
@@ -299,10 +299,11 @@ int preventionDepassementTailleMot(char* chaine, int taille_max) {
 
 int preventionCaracteresInterdits(char* chaine) {
     while (*chaine != '\0') {
-        if (*chaine == ',' || *chaine == '/') {
+        if (*chaine == ',' || *chaine == '/') { //Si , ou / est detecté dans la chaine, c'est quelle n'est pas correcte
             printf("Erreur : Vous ne pouvez pas entrer ',' ou '/'.\n");
             return 1;
         }
+        //A chaque itération, on regarde le prochain caractere de la chaine en additionnant de +1 la valeur de chaine
         chaine++;
     }
     return 0;
@@ -310,6 +311,7 @@ int preventionCaracteresInterdits(char* chaine) {
 
 int preventionDoublon(Dictionnaire* dictionnaire, char* mot) {
     for (int i = 0; i < dictionnaire->taille; i++) {
+        //Si le mot saisi est egal au mot de la i-ème ligne du dictionnaire, c'est qu'il est déjà présent
         if (strcmp(dictionnaire->ligne[i].mot, mot) == 0) {
             printf("Erreur : Le mot saisi existe deja...\n");
             return 1;
@@ -320,8 +322,10 @@ int preventionDoublon(Dictionnaire* dictionnaire, char* mot) {
 
 int preventionDoublonSynonyme(char* liste_synonymes, char* synonyme) {
     char copie_liste_synonymes[LONGUEUR_MOTS_MAX];
+    //On crée une copie, pour ne pas faire de modification à la chaine initiale (avec strtok)
     strncpy(copie_liste_synonymes, liste_synonymes, LONGUEUR_MOTS_MAX);
     copie_liste_synonymes[LONGUEUR_MOTS_MAX - 1] = '\0';
+    //On va diviser chaque synonyme pour les analyser 1 à 1, avec comme delimiteur "/"
     char* division_liste = strtok(copie_liste_synonymes, "/");
     while (division_liste != NULL) {
         if (strcmp(division_liste, synonyme) == 0) {
@@ -333,18 +337,26 @@ int preventionDoublonSynonyme(char* liste_synonymes, char* synonyme) {
     return 0;
 }
 
-void choix2(Dictionnaire* dictionnaire,char* mot, char* definition, char* traduction) { //Pour eviter d'avoir trop de texte dans menu, correspond au choix N°2
+//Les fonctions choix permettent d'avoir moins de texte au sein de la fonction menu, ce qui rend le code + lisible
+//De ce fait, la fonction menu se contentera d'appeller la/les fonctions demandées selon le choix de l'utilisateur
+
+//Choix 2: Ajouter un mot
+void choix2(Dictionnaire* dictionnaire,char* mot, char* definition, char* traduction) {
+
+    //Saisie du mot :
     printf("Saisissez le mot que vous souhaitez ajouter (30 caracteres max) :\n");
     lireChaineDeCaracteres(mot, LONGUEUR_MOTS_MAX);
     if (preventionDepassementTailleMot(mot, LONGUEUR_MOTS_MAX)) return;
     if (preventionCaracteresInterdits(mot)) return;
     if (preventionDoublon(dictionnaire, mot)) return;
 
+    //Saisie de la définition :
     printf("Ajoutez sa definition (100 caracteres max) :\n");
     lireChaineDeCaracteres(definition, LONGUEUR_DEFINITION_MAX);
     if (preventionDepassementTailleMot(definition, LONGUEUR_DEFINITION_MAX)) return;
     if (preventionCaracteresInterdits(definition)) return;
 
+    //Saisie de la traduction :
     printf("Enfin, ajoutez sa traduction (30 caracteres max):\n");
     lireChaineDeCaracteres(traduction, LONGUEUR_MOTS_MAX);
     if (preventionDepassementTailleMot(traduction, LONGUEUR_MOTS_MAX)) return;
@@ -354,6 +366,7 @@ void choix2(Dictionnaire* dictionnaire,char* mot, char* definition, char* traduc
     }
 }
 
+//Choix 3 : Supprimer un mot
 void choix3(Dictionnaire* dictionnaire, char* mot) {
     if (preventionDictionnaireVide(dictionnaire)) return;
     printf("Saisissez le mot que vous souhaitez supprimer :\n");
@@ -362,6 +375,7 @@ void choix3(Dictionnaire* dictionnaire, char* mot) {
     supprimerMot(dictionnaire, mot);
 }
 
+//Choix 4 : Affichage de la définition du mot souhaité
 void choix4(Dictionnaire* dictionnaire, char* mot) {
     if (preventionDictionnaireVide(dictionnaire)) return;
     printf("La definition de quel mot souhaitez-vous afficher ?\n");
@@ -370,6 +384,7 @@ void choix4(Dictionnaire* dictionnaire, char* mot) {
     afficherDefinition(dictionnaire, mot);
 }
 
+//Choix 5 : Affichage de la traduction du mot souhaité
 void choix5(Dictionnaire* dictionnaire, char* mot) {
     if (preventionDictionnaireVide(dictionnaire)) return;
     printf("La traduction de quel mot souhaitez-vous afficher ?\n");
@@ -378,6 +393,7 @@ void choix5(Dictionnaire* dictionnaire, char* mot) {
     afficherTraduction(dictionnaire, mot);
 }
 
+//Choix 6 : Gestion des synonymes
 void choix6(Dictionnaire* dictionnaire, char* mot) {
     int choix;
     if (preventionDictionnaireVide(dictionnaire)) return;
@@ -403,6 +419,10 @@ void choix6(Dictionnaire* dictionnaire, char* mot) {
     }
 }
 
+//Le choix 7 et 8 n'ont pas besoin de fonction choix pour fonctionner et se suffisent à elle seules, on a :
+//Choix 7 : jeuApprentissage()
+//Choix 8: sauvegardeDictionnaire()
+
 void menu(Dictionnaire* dictionnaire) {
     int choix;
     char mot[LONGUEUR_MOTS_MAX];
@@ -421,7 +441,7 @@ void menu(Dictionnaire* dictionnaire) {
         printf("8. Sauvegarder et quitter\n");
         printf("Votre choix : \n");
         scanf("%d", &choix);
-        getchar();
+        getchar(); //Pour vider le tampon d'entrée et eviter des bugs à cause de scanf
 
         switch (choix) {
             case 1:
@@ -448,8 +468,8 @@ void menu(Dictionnaire* dictionnaire) {
             case 8:
                 sauvegardeDictionnaire(dictionnaire);
                 break;
-            default:
+            default: //Si le choix saisi n'est pas compris dans la liste des choix, on renvoi un message d'erreur
                 printf("Erreur : Le choix saisi n'est pas valide...\n");
         }
-    } while (choix != 8);
+    } while (choix != 8);//On ne quitte pas le programme tant que l'utilisateur ne veut pas quitter
 }
