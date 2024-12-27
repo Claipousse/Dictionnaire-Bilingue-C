@@ -1,7 +1,8 @@
 #include "projet.h"
 
 void chargerDictionnaire(Dictionnaire* dictionnaire) {
-    FILE *pf = fopen("dict.txt", "r"); //On ouvre le fichier "dict.txt" en mode lecture (pas besoin w car on veut seulement le charger)
+    //On ouvre le fichier "dict.txt" en mode lecture (pas besoin w car on veut seulement le charger)
+    FILE *pf = fopen("dict.txt", "r");
     if (pf == NULL) { //Si le dictionnaire n'est pas trouvé, on va en créer un nouveau, via la structure Dictionnaire
         printf("dict.txt introuvable, un nouveau fichier va etre cree.\n");
         dictionnaire->ligne = malloc(TAILLE_PHYSIQUE * sizeof(Ligne));
@@ -22,7 +23,7 @@ void chargerDictionnaire(Dictionnaire* dictionnaire) {
     dictionnaire->taille = 0;
     dictionnaire->capacite = TAILLE_PHYSIQUE;
 
-    char ligne[LONGUEUR_MOTS_MAX * 3]; //Une ligne contient 3 valeurs, le mot, la définition et la traduction
+    char ligne[LONGUEUR_MOTS_MAX * 2 + LONGUEUR_DEFINITION_MAX]; //Une ligne contient 3 valeurs, le mot, la définition et la traduction
     while(fgets(ligne, sizeof(ligne), pf)) {
         char mot[LONGUEUR_MOTS_MAX];
         char definition[LONGUEUR_DEFINITION_MAX];
@@ -58,7 +59,7 @@ void ajouterMot(Dictionnaire* dictionnaire, char *mot, char* definition, char* t
 }
 
 void supprimerMot(Dictionnaire* dictionnaire, char *mot) {
-    //L'index du mot à supprimer est une variable temporaire, qu'on utilisera pour décaler tous les éléments de 1 (à partir du mot qu'on souhaite supprimer)
+    //Lindex_mot_a_supprimer = variable temporaire, utilisée pour décaler tous les éléments de 1 (à partir du mot qu'on souhaite supprimer)
     int index_mot_a_supprimer = rechercherMot(dictionnaire, mot);
     if (index_mot_a_supprimer == -1) {
         printf("Erreur : Ce mot n'est pas present dans le dictionnaire...\n");
@@ -161,6 +162,13 @@ void ajoutSynonyme(Dictionnaire* dictionnaire, char* mot) {
     if (preventionDepassementTailleMot(synonyme, LONGUEUR_MOTS_MAX)) return;
     if (preventionCaracteresInterdits(synonyme)) return;
     if (preventionDoublonSynonyme(dictionnaire->ligne[index_mot].traduction, synonyme)) return;
+    //Verification de la longueur maximale de la chaîne traduction
+    size_t longueur_actuelle = strlen(dictionnaire->ligne[index_mot].traduction);
+    size_t longueur_ajoutee = strlen(synonyme) + 1; //+1 pour le séparateur "/"
+    if (longueur_ajoutee + longueur_actuelle >= LONGUEUR_MOTS_MAX) {
+        printf("Vous avez atteint la limite de la taille des traductions...\n");
+        return;
+    }
     //Si toutes les conditions sont respectés, on ajoute le synonyme en concaténant la/les traduction(s) et le nouveau synonyme
     strcat(dictionnaire->ligne[index_mot].traduction, "/");
     strcat(dictionnaire->ligne[index_mot].traduction, synonyme);

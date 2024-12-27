@@ -1,4 +1,5 @@
 Voiture:Vehicule qui fait vroum vroum:Car
 Jardin:Espace vert avec des plantes de l'herbe et des fleurs:Garden/Yard
-Parapluie:Pour se proteger de la pluie:Umbrella
-Ep‚e:Arme tranchante utilis‚e au Moyen-¶ge:Sword
+Maison:Espace o— des personnes vivent:House
+Parapluie:Objet pour se prot‚ger de la pluie:Umbrella
+Forˆt:Terrain o— il y a ‚norm‚ment d'arbres:Forest
