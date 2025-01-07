@@ -1,5 +1,5 @@
-Voiture:Vehicule qui fait vroum vroum:Car
-Jardin:Espace vert avec des plantes de l'herbe et des fleurs:Garden/Yard
 Maison:Espace o— des personnes vivent:House
 Parapluie:Objet pour se prot‚ger de la pluie:Umbrella
-Forˆt:Terrain o— il y a ‚norm‚ment d'arbres:Forest
+Voiture:V‚hicule … moteur:Car
+Forˆt:Terrain o— il y a beaucoup d'arbres:Forest
+Jardin:Espace vert avec des plantes:Garden/Yard

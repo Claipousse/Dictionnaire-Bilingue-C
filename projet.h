@@ -2,10 +2,10 @@
 #define PROJET_H
 
 //Bibliotheques utilisés pour le projet :
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <time.h>
+#include <stdio.h> // Pour les entrées et sorties (scanf, printf, ...) et pour les opérations sur fichiers (fgets, fprintf,...)
+#include <stdlib.h> // Pour la gestion de la mémoire (malloc, calloc, realloc,...)
+#include <string.h> // Pour gérer les chaines de caractères
+#include <time.h> //Pour l'aléatoire
 
 #define LONGUEUR_MOTS_MAX 50 //La longueur max d'un mot + de/des traduction(s) est de 50
 #define LONGUEUR_DEFINITION_MAX 100 //La longueur max d'une definition est de 100
