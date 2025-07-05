@@ -1,5 +1,0 @@
-Maison:Espace o— des personnes vivent:House
-Parapluie:Objet pour se prot‚ger de la pluie:Umbrella
-Voiture:V‚hicule … moteur:Car
-Forˆt:Terrain o— il y a beaucoup d'arbres:Forest
-Jardin:Espace vert avec des plantes:Garden/Yard

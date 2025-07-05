@@ -1,3 +1,0 @@
-C:/Users/cleme/Desktop/Dictionnaire-Bilingue-C/cmake-build-debug/CMakeFiles/Projet_Dictionnaire.dir
-C:/Users/cleme/Desktop/Dictionnaire-Bilingue-C/cmake-build-debug/CMakeFiles/edit_cache.dir
-C:/Users/cleme/Desktop/Dictionnaire-Bilingue-C/cmake-build-debug/CMakeFiles/rebuild_cache.dir
